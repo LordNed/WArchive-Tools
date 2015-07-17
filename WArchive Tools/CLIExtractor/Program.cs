@@ -80,6 +80,13 @@ namespace CLIExtractor
                 Console.WriteLine("Caught exception while extracting files. See above for more information if possible.");
                 Console.ReadKey();
             }
+
+            // If we printed out the FS tree, wait for them to read it before dismissing.
+            if(m_printFS)
+            {
+                Console.WriteLine("Press any key to continue.");
+                Console.ReadKey();
+            }
         }
 
         private static void PrintFileSystem(VirtualFilesystemDirectory root)
