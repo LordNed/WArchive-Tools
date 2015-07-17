@@ -81,7 +81,7 @@ namespace CLIExtractor
                 Console.ReadKey();
             }
 
-            // If we printed out the FS tree, wait for them to read it before dismissing.
+            // If we printed out the FS tree, wait for them to read it before dismissing.   
             if(m_printFS)
             {
                 Console.WriteLine("Press any key to continue.");
