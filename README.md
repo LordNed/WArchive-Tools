@@ -9,6 +9,9 @@ Drag and drop one or more folders or files onto the exe. The exe will recursivel
 WArcExtract.exe "C:/arc1.arc" "C:/My Archives" "C:/compressedArc.rarc"
 
 Optional Arguments:
+
 -help (Displays Help Text)
+
 -verbose (Extra debug printouts/status updates of progress)
+
 -printFS (displays a ascii tree of the archive contents (but also dumps contents))
