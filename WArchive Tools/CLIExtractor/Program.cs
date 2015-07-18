@@ -14,6 +14,7 @@ namespace CLIExtractor
         private static bool m_wasError;
         private static bool m_verboseOutput;
         private static bool m_printFS;
+        private static bool m_useInternalNames;
 
         static void Main(string[] args)
         {
@@ -30,13 +31,13 @@ namespace CLIExtractor
                 Console.WriteLine("==========================");
 
                 Console.WriteLine("usage: WArcExtract.exe <list of archives or folders separated by space>");
-                Console.WriteLine("arguments: -help, -verbose -printFS");
+                Console.WriteLine("arguments: -help, -verbose -printFS -useInternalNames");
                 Console.WriteLine("Press any key to continue.");
                 Console.ReadKey();
                 return;
             }
 
-            bool displayedHelp = ProcessArguments(args, out m_verboseOutput, out m_printFS);
+            bool displayedHelp = ProcessArguments(args);
 
             if (displayedHelp)
             {
@@ -82,7 +83,7 @@ namespace CLIExtractor
             }
 
             // If we printed out the FS tree, wait for them to read it before dismissing.   
-            if(m_printFS)
+            if (m_printFS)
             {
                 Console.WriteLine("Press any key to continue.");
                 Console.ReadKey();
@@ -135,13 +136,12 @@ namespace CLIExtractor
 
             try
             {
+                MemoryStream decompressedFile = null;
                 using (EndianBinaryReader fileReader = new EndianBinaryReader(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Endian.Big))
                 {
                     // Read the first 4 bytes to see if it's a compressed file (Yaz0) or a plain RARC file.
                     uint fileMagic = fileReader.ReadUInt32();
                     fileReader.BaseStream.Position = 0L; // Reset to the start so that the next thing to read it is at the start like it expects.
-
-                    MemoryStream decompressedFile = null;
 
                     if (fileMagic == 0x59617A30) // Yaz0
                     {
@@ -158,29 +158,36 @@ namespace CLIExtractor
                         fileReader.BaseStream.CopyTo(decompressedFile);
                         decompressedFile.Position = 0L;
                     }
-
-                    if (decompressedFile == null)
-                    {
-                        if (m_verboseOutput)
-                            Console.WriteLine("Skipping archive, not a Yaz0 or RARC file.");
-                        return;
-                    }
-
-                    // Decompress the archive into the folder. It'll generate a sub-folder with the Archive's ROOT name.
-                    RARC rarc = new RARC();
-                    using (EndianBinaryReader reader = new EndianBinaryReader(decompressedFile, Endian.Big))
-                    {
-                        VirtualFilesystemDirectory root = rarc.ReadFile(reader);
-                        if (m_printFS)
-                            PrintFileSystem(root);
-
-                        // Write it to disk.
-                        root.ExportToDisk(outputFolder);
-                    }
-
-                    if(m_verboseOutput)
-                        Console.WriteLine("Completed.");
                 }
+
+                if (decompressedFile == null)
+                {
+                    if (m_verboseOutput)
+                        Console.WriteLine("Skipping archive, not a Yaz0 or RARC file.");
+                    return;
+                }
+
+                // Decompress the archive into the folder. It'll generate a sub-folder with the Archive's ROOT name.
+                RARC rarc = new RARC();
+                using (EndianBinaryReader reader = new EndianBinaryReader(decompressedFile, Endian.Big))
+                {
+                    VirtualFilesystemDirectory root = rarc.ReadFile(reader);
+                    if (m_printFS)
+                        PrintFileSystem(root);
+
+                    // Many archives use the same internal root name, which causes a conflict when they export.
+                    // To solve this, we use the file name of the file as the root name, instead of the internal
+                    // name.
+                    if (!m_useInternalNames)
+                        root.Name = Path.GetFileNameWithoutExtension(filePath);
+
+                    // Write it to disk.
+                    root.ExportToDisk(outputFolder);
+                }
+
+                if (m_verboseOutput)
+                    Console.WriteLine("Completed.");
+
             }
             catch (Exception ex)
             {
@@ -242,18 +249,25 @@ namespace CLIExtractor
             return commonPath;
         }
 
-        private static bool ProcessArguments(string[] args, out bool verboseOutput, out bool printFileSystem)
+        private static bool ProcessArguments(string[] args)
         {
             List<string> argList = new List<string>(args);
 
-            verboseOutput = argList.Contains("-verbose");
-            printFileSystem = argList.Contains("-printFS");
+            m_verboseOutput = argList.Contains("-verbose");
+            m_printFS = argList.Contains("-printFS");
+            m_useInternalNames = argList.Contains("-useInternalNames");
 
             if (argList.Contains("-help"))
             {
                 Console.WriteLine("Documentation:");
                 Console.WriteLine("-verbose");
                 Console.WriteLine("\tDisplays verbose output and percentages of extraction. Can be slow on large numbers of files.");
+                Console.WriteLine("-printFS");
+                Console.WriteLine("\tPrints out the internal filesystem of the archive after extracting them.");
+                Console.WriteLine("-useInternalNames");
+                Console.WriteLine("\tWrite archives out to folders which use the internal root name, instead of the file name. " +
+                                    "This is disabled by default as many archives have their internal name set to 'Archive' which " +
+                                    "conflicts when you export multiple archives at once.");
                 return true;
             }
 
