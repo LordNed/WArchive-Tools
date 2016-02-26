@@ -14,7 +14,7 @@ namespace WArchiveTools.Compression
 
             int uncompressedSize = reader.ReadInt32();
             int linkTableOffset = reader.ReadInt32();
-            int nonLinkedTableOffset = reader.ReadInt32();
+            int byteChunkAndCountModifiersOffset = reader.ReadInt32();
 
             int maskBitCounter = 0;
             int currentOffsetInDestBuffer = 0;
@@ -24,32 +24,38 @@ namespace WArchiveTools.Compression
 
             do
             {
+                // If we're out of bits, get the next mask.
                 if (maskBitCounter == 0)
                 {
                     currentMask = reader.ReadInt32();
                     maskBitCounter = 32;
                 }
 
+                // If the next bit is set, the chunk is non-linked and just copy it from the non-link table.
                 if (((uint)currentMask & (uint)0x80000000) == 0x80000000)
                 {
-                    uncompressedData[currentOffsetInDestBuffer] = reader.ReadByteAt(nonLinkedTableOffset);
+                    uncompressedData[currentOffsetInDestBuffer] = reader.ReadByteAt(byteChunkAndCountModifiersOffset);
                     currentOffsetInDestBuffer++;
-                    nonLinkedTableOffset++;
+                    byteChunkAndCountModifiersOffset++;
                 }
-
+                // Do a copy otherwise.
                 else
                 {
+                    // Read 16-bit from the link table
                     ushort link = reader.ReadUInt16At(linkTableOffset);
                     linkTableOffset += 2;
 
+                    // Calculate the offset
                     int offset = currentOffsetInDestBuffer - (link & 0xfff);
+
+                    // Calculate the count
                     int count = link >> 12;
 
                     if (count == 0)
                     {
                         byte countModifier;
-                        countModifier = reader.ReadByteAt(nonLinkedTableOffset);
-                        nonLinkedTableOffset++;
+                        countModifier = reader.ReadByteAt(byteChunkAndCountModifiersOffset);
+                        byteChunkAndCountModifiersOffset++;
                         count = countModifier + 18;
                     }
                     else
@@ -57,6 +63,7 @@ namespace WArchiveTools.Compression
                         count += 2;
                     }
 
+                    // Copy the block
                     int blockCopy = offset;
 
                     for (int i = 0; i < count; i++)
@@ -67,6 +74,7 @@ namespace WArchiveTools.Compression
                     }
                 }
 
+                // Get the next bit in the mask.
                 currentMask <<= 1;
                 maskBitCounter--;
 
