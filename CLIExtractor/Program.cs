@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using WArchiveTools.Archive;
 using WArchiveTools.Compression;
-using WArchiveTools.rarc;
-using WEditor.FileSystem;
+using WArchiveTools.FileSystem;
 
 namespace CLIExtractor
 {

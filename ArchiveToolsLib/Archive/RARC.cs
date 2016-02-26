@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using WEditor.FileSystem;
 
-namespace WArchiveTools.rarc
+namespace WArchiveTools.Archive
 {
     public partial class RARC
     {
