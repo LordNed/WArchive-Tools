@@ -42,6 +42,8 @@
     <Compile Include="FileSystem\VirtualFilesystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="rarc\RARC.cs" />
+    <Compile Include="rarc\RARCPacker.cs" />
+    <Compile Include="rarc\RARCReader.cs" />
     <Compile Include="yaz0\Yaz0Decoder.cs" />
     <Compile Include="yaz0\Yaz0Encoder.cs" />
   </ItemGroup>
