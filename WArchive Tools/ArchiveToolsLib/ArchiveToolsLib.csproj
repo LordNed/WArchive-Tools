@@ -44,6 +44,8 @@
     <Compile Include="rarc\RARC.cs" />
     <Compile Include="rarc\RARCPacker.cs" />
     <Compile Include="rarc\RARCReader.cs" />
+    <Compile Include="yay0\Yay0Decoder.cs" />
+    <Compile Include="yay0\Yay0Encoder.cs" />
     <Compile Include="yaz0\Yaz0Decoder.cs" />
     <Compile Include="yaz0\Yaz0Encoder.cs" />
   </ItemGroup>
