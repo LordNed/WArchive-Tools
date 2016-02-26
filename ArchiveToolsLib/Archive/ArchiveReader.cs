@@ -6,7 +6,7 @@ using WArchiveTools.FileSystem;
 
 namespace WArchiveTools.Archive
 {
-    public partial class RARC
+    public partial class Archive
     {
         public VirtualFilesystemDirectory ReadFile(EndianBinaryReader reader)
         {

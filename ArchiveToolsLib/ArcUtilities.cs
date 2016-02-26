@@ -64,7 +64,7 @@ namespace WArchiveTools
                 return null;
 
             // Decompress the archive into the folder. It'll generate a sub-folder with the Archive's ROOT name.
-            RARC rarc = new RARC();
+            Archive.Archive rarc = new Archive.Archive();
             using (EndianBinaryReader reader = new EndianBinaryReader(decompressedFile, Endian.Big))
             {
                 return rarc.ReadFile(reader);
@@ -85,7 +85,7 @@ namespace WArchiveTools
             if (root == null)
                 throw new ArgumentNullException("root", "Cannot write null VirtualFilesystemDirectory to archive.");
 
-            RARC rarc = new RARC();
+            Archive.Archive rarc = new Archive.Archive();
             MemoryStream outputData = new MemoryStream();
 
             // Create an archive structure from the given root and write it to file. Compression will be applied if specified.

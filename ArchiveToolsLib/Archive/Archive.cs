@@ -1,11 +1,6 @@
-﻿using GameFormatReader.Common;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-namespace WArchiveTools.Archive
+﻿namespace WArchiveTools.Archive
 {
-    public partial class RARC
+    public partial class Archive
     {
         /// <summary>
         /// Represents a directory within the RARC archive.
