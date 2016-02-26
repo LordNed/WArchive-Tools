@@ -53,5 +53,20 @@ namespace WArchiveTools
                 return rarc.ReadFile(reader);
             }
         }
+
+        public static void WriteArchive(string filePath, VirtualFilesystemDirectory root)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentNullException("filePath", "Cannot write archive to empty file path!");
+
+            // Create an archive structure from the given root and write it to file. Compression will be applied if specified.
+            RARC rarc = new RARC();
+            using (EndianBinaryWriter fileWriter = new EndianBinaryWriter(File.Open(filePath, FileMode.Create), Endian.Big))
+            {
+                byte[] rawData = rarc.WriteFile(root);
+
+                fileWriter.Write(rawData);
+            }
+        }
     }
 }
