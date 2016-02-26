@@ -35,16 +35,10 @@
             public ushort NameHashcode { get; internal set; }
             /// <summary>Type of entry. 0x2 = Directory, 0x11 = File.</summary>
             public byte Type { get; internal set; }
-            /// <summary>Padding byte. Included here for the sake of documentation. </summary>
-            public byte Padding { get; internal set; }
             /// <summary>File/subdirectory name string table offset.</summary>
             public string Name { get; internal set; }
             /// <summary>Data bytes. If this entry is a directory, it will be the node index.</summary>
             public byte[] Data { get; internal set; }
-            /// <summary>Always zero.</summary>
-            public uint ZeroPadding { get; internal set; }
-
-            // Non actual struct items
 
             /// <summary>Whether or not this entry is a directory.</summary>
             public bool IsDirectory { get { return ID == 0xFFFF; } }

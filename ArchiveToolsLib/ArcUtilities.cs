@@ -45,7 +45,6 @@ namespace WArchiveTools
 
                     case 0x59617930: // Yay0 Compression
                         throw new NotImplementedException("Yay0 decoding not currently supported.");
-                        break;
 
                     case 0x52415243: // RARC - Uncompressed
                         decompressedFile = new MemoryStream((int)fileReader.BaseStream.Length);

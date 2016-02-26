@@ -234,10 +234,8 @@ namespace WArchiveTools.Archive
                         ID = (ushort)exportFileEntries.Count,
                         NameHashcode = HashName(virtFile.Name + virtFile.Extension),
                         Type = 0x11,
-                        Padding = 0,
                         Name = virtFile.Name + virtFile.Extension,
                         Data = virtFile.File.GetData(),
-                        ZeroPadding = 0
                     };
 
                     dirFileEntries.Add(file);
@@ -266,10 +264,8 @@ namespace WArchiveTools.Archive
                         ID = ushort.MaxValue,
                         NameHashcode = HashName(virtDir.Name),
                         Type = 0x02,
-                        Padding = 0,
                         Name = virtDir.Name,
                         Data = new byte[] { (byte)(exportNodes.IndexOf(exportNodes.Find(i => i.Name == virtDir.Name))) },
-                        ZeroPadding = 0
                     };
 
                     dirFileEntries.Add(file);
@@ -345,10 +341,8 @@ namespace WArchiveTools.Archive
                 ID = ushort.MaxValue,
                 NameHashcode = HashName("."),
                 Type = 0x02,
-                Padding = 0,
                 Name = ".",
                 Data = new byte[] { (byte)(exportNodes.IndexOf(exportNodes.Find(i => i.Name == currentDir.Name))) },
-                ZeroPadding = 0
             };
 
             if (parentDir != null)
@@ -359,10 +353,8 @@ namespace WArchiveTools.Archive
                     ID = ushort.MaxValue,
                     NameHashcode = HashName(".."),
                     Type = 0x02,
-                    Padding = 0,
                     Name = "..",
                     Data = new byte[] { (byte)(exportNodes.IndexOf(exportNodes.Find(i => i.Name == parentDir.Name))) },
-                    ZeroPadding = 0
                 };
             }
 
@@ -374,10 +366,8 @@ namespace WArchiveTools.Archive
                     ID = ushort.MaxValue,
                     NameHashcode = HashName(".."),
                     Type = 0x02,
-                    Padding = 0,
                     Name = "..",
                     Data = new byte[] { (byte)(255) },
-                    ZeroPadding = 0
                 };
             }
 

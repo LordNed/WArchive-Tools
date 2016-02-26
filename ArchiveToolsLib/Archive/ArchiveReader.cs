@@ -57,14 +57,12 @@ namespace WArchiveTools.Archive
                 {
                     // Jump to the entry's offset in the file.
                     reader.BaseStream.Position = fileEntryOffset + ((node.FirstFileOffset + i) * 0x14); // 0x14 is the size of a File Entry in bytes
-                    node.Entries[i] = new FileEntry
-                    {
-                        ID = reader.ReadUInt16(),
-                        NameHashcode = reader.ReadUInt16(),
-                        Type = reader.ReadByte(),
-                        Padding = reader.ReadByte(),
-                        Name = ReadStringAtOffset(reader, stringTableOffset, reader.ReadUInt16())
-                    };
+                    node.Entries[i] = new FileEntry();
+                    node.Entries[i].ID = reader.ReadUInt16();
+                    node.Entries[i].NameHashcode = reader.ReadUInt16();
+                    node.Entries[i].Type = reader.ReadByte();
+                    reader.SkipByte(); // Padding
+                    node.Entries[i].Name = ReadStringAtOffset(reader, stringTableOffset, reader.ReadUInt16());
 
                     // Skip these ones cause I don't know how computers work.
                     if (node.Entries[i].Name == "." || node.Entries[i].Name == "..")
@@ -91,7 +89,8 @@ namespace WArchiveTools.Archive
                         VirtualFilesystemFile vfFile = new VirtualFilesystemFile(fileName, extension, vfFileContents);
                         curDir.Children.Add(vfFile);
                     }
-                    node.Entries[i].ZeroPadding = reader.ReadUInt32();
+
+                    reader.SkipInt32(); // Padding
                 }
             }
 
