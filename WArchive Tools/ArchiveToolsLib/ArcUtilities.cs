@@ -10,9 +10,10 @@ namespace WArchiveTools
     {
         /// <summary>
         /// Loads an archive into a <see cref="VirtualFilesystemDirectory"/>, automatically de-compressing the archive if required.
+        /// 
         /// </summary>
-        /// <param name="filePath">Filepath of file to decompress and load.</param>
-        /// <returns><see cref="VirtualFilesystemDirectory"/> containing the contents, or null if not an archive.</returns>
+        /// <param name="filePath">Filepath of file to (optionally) decompress and load.</param>
+        /// <returns><see cref="VirtualFilesystemDirectory"/> containing the contents, or null if filepath is not a valid archive.</returns>
         public static VirtualFilesystemDirectory LoadArchive(string filePath)
         {
             if(string.IsNullOrEmpty(filePath))
@@ -28,17 +29,26 @@ namespace WArchiveTools
                 uint fileMagic = fileReader.ReadUInt32();
                 fileReader.BaseStream.Position = 0L; // Reset to the start so that the next thing to read it is at the start like it expects.
 
-                if (fileMagic == 0x59617A30) // Yaz0
+                switch(fileMagic)
                 {
-                    Yaz0 yaz0 = new Yaz0();
-                    decompressedFile = yaz0.Decode(fileReader);
-                }
-                else if (fileMagic == 0x52415243) // RARC
-                {
-                    // Copy the fileReader stream to a new memorystream.
-                    decompressedFile = new MemoryStream((int)fileReader.BaseStream.Length);
-                    fileReader.BaseStream.CopyTo(decompressedFile);
-                    decompressedFile.Position = 0L;
+                    case 0x59617A30: // Yaz0 Compression
+                        Yaz0 yaz0 = new Yaz0();
+                        decompressedFile = yaz0.Decode(fileReader);
+                        break;
+
+                    case 0x59617930: // Yay0 Compression
+                        throw new NotImplementedException("Yay0 decoding not currently supported.");
+                        break;
+
+                    case 0x52415243: // RARC - Uncompressed
+                        decompressedFile = new MemoryStream((int)fileReader.BaseStream.Length);
+                        fileReader.BaseStream.CopyTo(decompressedFile);
+
+                        // Copying modifies the decompressedFile's read head (places it at new location) so we rewind.
+                        decompressedFile.Position = 0L;
+                        break;
+                    default:
+                        throw new NotImplementedException(string.Format("Unknown magic: {0}. If this is a Nintendo archive, open an Issue on GitHub!", fileMagic.ToString("X8")));
                 }
             }
 
