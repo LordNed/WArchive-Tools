@@ -41,9 +41,9 @@
     <Compile Include="ArcUtilities.cs" />
     <Compile Include="FileSystem\VirtualFilesystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Archive\RARC.cs" />
-    <Compile Include="Archive\RARCPacker.cs" />
-    <Compile Include="Archive\RARCReader.cs" />
+    <Compile Include="Archive\Archive.cs" />
+    <Compile Include="Archive\ArchivePacker.cs" />
+    <Compile Include="Archive\ArchiveReader.cs" />
     <Compile Include="Compression\Yay0Decoder.cs" />
     <Compile Include="Compression\Yay0Encoder.cs" />
     <Compile Include="Compression\Yaz0Decoder.cs" />
