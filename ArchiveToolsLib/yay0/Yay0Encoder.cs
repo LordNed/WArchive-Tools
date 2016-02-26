@@ -1,12 +1,11 @@
-﻿using GameFormatReader.Common;
-using System;
+﻿using System;
 using System.IO;
 
-namespace WArchiveTools.yay0
+namespace WArchiveTools.Compression
 {
-    public partial class Yay0
+    public static partial class Yay0
     {
-        public EndianBinaryWriter Encode(MemoryStream input)
+        public static MemoryStream Encode(MemoryStream input)
         {
             throw new NotImplementedException();
         }
