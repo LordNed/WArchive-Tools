@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 
-namespace WEditor.FileSystem
+namespace WArchiveTools.FileSystem
 {
     public enum NodeType
     {
@@ -240,7 +240,7 @@ namespace WEditor.FileSystem
 
         public override string ToString()
         {
-            return string.Format("[File] 0}", Name);
+            return string.Format("[File] {0}", Name);
         }
     }
 

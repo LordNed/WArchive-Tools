@@ -1,9 +1,9 @@
 ﻿using GameFormatReader.Common;
 using System;
 using System.IO;
+using WArchiveTools.Archive;
 using WArchiveTools.Compression;
-using WArchiveTools.rarc;
-using WEditor.FileSystem;
+using WArchiveTools.FileSystem;
 
 namespace WArchiveTools
 {

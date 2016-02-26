@@ -1,10 +1,9 @@
 ﻿using GameFormatReader.Common;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using WEditor.FileSystem;
+using WArchiveTools.FileSystem;
 
-namespace WArchiveTools.rarc
+namespace WArchiveTools.Archive
 {
     public partial class RARC
     {
@@ -12,8 +11,6 @@ namespace WArchiveTools.rarc
         List<FileEntry> exportFileEntries;
         List<char> exportStringTable;
         List<byte> exportFileData;
-
-        ushort exportFileID;
 
         public byte[] WriteFile(VirtualFilesystemDirectory root)
         {
