@@ -1,8 +1,8 @@
 ﻿using GameFormatReader.Common;
 using System;
 using System.IO;
+using WArchiveTools.Compression;
 using WArchiveTools.rarc;
-using WArchiveTools.yaz0;
 using WEditor.FileSystem;
 
 namespace WArchiveTools
@@ -40,8 +40,7 @@ namespace WArchiveTools
                 switch(fileMagic)
                 {
                     case 0x59617A30: // Yaz0 Compression
-                        Yaz0 yaz0 = new Yaz0();
-                        decompressedFile = yaz0.Decode(fileReader);
+                        decompressedFile = Yaz0.Decode(fileReader);
                         break;
 
                     case 0x59617930: // Yay0 Compression
@@ -90,7 +89,8 @@ namespace WArchiveTools
             MemoryStream outputData = new MemoryStream();
 
             // Create an archive structure from the given root and write it to file. Compression will be applied if specified.
-            using (EndianBinaryWriter fileWriter = new EndianBinaryWriter(File.Open(outputPath, FileMode.Create), Endian.Big))
+            MemoryStream uncompressedStream = new MemoryStream();
+            using (EndianBinaryWriter fileWriter = new EndianBinaryWriter(uncompressedStream, Endian.Big))
             {
                 byte[] rawData = rarc.WriteFile(root);
 
@@ -99,16 +99,30 @@ namespace WArchiveTools
                 fileWriter.BaseStream.CopyTo(outputData);
             }
 
+            MemoryStream compressedStream = new MemoryStream();
+
             switch(compression)
             {
                 case ArchiveCompression.Yay0:
                     throw new NotImplementedException("Yay0 Compression not implemented.");
+                    //compressedStream = Yay0.Encode(uncompressedStream);
+                    //break;
 
                 case ArchiveCompression.Yaz0:
-                    throw new NotImplementedException("Yaz0 Compression not implemented.");
+                    EndianBinaryWriter encoded = Yaz0.Encode(uncompressedStream);
+                    encoded.Seek(0, SeekOrigin.Begin);
+                    encoded.BaseStream.CopyTo(compressedStream);
+                    break;
+
+                case ArchiveCompression.Uncompressed:
+
+                    // Well, that was easy.
+                    compressedStream = uncompressedStream;
+                    break;
             }
 
-            // ToDo: Write memory stream to disk when EndianBinaryWriter is removed from the RARC args.
+            compressedStream.Seek(0, SeekOrigin.Begin);
+            compressedStream.WriteTo(File.Create(outputPath));
         }
     }
 }

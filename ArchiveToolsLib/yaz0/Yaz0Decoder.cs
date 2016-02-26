@@ -1,7 +1,7 @@
 ﻿using GameFormatReader.Common;
 using System.IO;
 
-namespace WArchiveTools.yaz0
+namespace WArchiveTools.Compression
 {
     /// <summary>
     /// Compress and Decompress Yaz0 encoded files.
@@ -17,7 +17,7 @@ namespace WArchiveTools.yaz0
         /// </summary>
         /// <param name="stream">Stream to read data from.</param>
         /// <returns>Decoded file as <see cref="MemoryStream"/></returns>
-        public MemoryStream Decode(EndianBinaryReader stream)
+        public static MemoryStream Decode(EndianBinaryReader stream)
         {
             // 16 byte Header
             if (stream.ReadUInt32() != 0x59617A30) // "Yaz0" Magic

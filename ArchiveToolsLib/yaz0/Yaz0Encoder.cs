@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace WArchiveTools.yaz0
+namespace WArchiveTools.Compression
 {
     /// <summary>
     /// Compress and Decompress Yaz0 encoded files.
@@ -10,14 +10,17 @@ namespace WArchiveTools.yaz0
     /// Port of thakis' yaz0dec.cpp and shevious' yaz0enc.cpp for C#. Minor code cleanup in 2015 by Lord Ned (@LordNed) but otherwise
     /// unmodified versions of thakis' and shevious' work. 
     /// </summary>
-    public partial class Yaz0
+    public static partial class Yaz0
     {
+        static int sNumBytes1, sMatchPos;
+        static bool sPrevFlag = false;
+
         /// <summary>
         /// Incode the data in the specified MemoryStream into a yaz0 compressed file.
         /// </summary>
         /// <param name="input">Data to be compressed.</param>
         /// <returns>A stream filled with the written data of the yaz0 compressed file.</returns>
-        public EndianBinaryWriter Encode(MemoryStream input)
+        public static EndianBinaryWriter Encode(MemoryStream input)
         {
             if (input == null)
                 throw new ArgumentNullException("input", "input MemoryStream should not be null!");
@@ -137,9 +140,6 @@ namespace WArchiveTools.yaz0
                 dstPos = 0;
             }
         }
-
-        static int sNumBytes1, sMatchPos;
-        static bool sPrevFlag = false;
 
         /// <summary>
         /// A look ahead encoding scheme for NGC Yaz0

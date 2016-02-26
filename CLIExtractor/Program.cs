@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using WArchiveTools.Compression;
 using WArchiveTools.rarc;
-using WArchiveTools.yaz0;
 using WEditor.FileSystem;
 
 namespace CLIExtractor
@@ -148,8 +148,7 @@ namespace CLIExtractor
                         if (m_verboseOutput)
                             Console.Write("Archive compressed with Yaz0, decompressing... ");
 
-                        Yaz0 yaz0 = new Yaz0();
-                        decompressedFile = yaz0.Decode(fileReader);
+                        decompressedFile = Yaz0.Decode(fileReader);
                     }
                     else if (fileMagic == 0x52415243) // RARC
                     {
