@@ -4,15 +4,24 @@ using System.IO;
 using WArchiveTools.rarc;
 using WArchiveTools.yaz0;
 using WEditor.FileSystem;
+
 namespace WArchiveTools
 {
+    public enum ArchiveCompression
+    {
+        Yay0, // Yay0 compression used by early Nintendo games.
+        Yaz0, // The more common Yaz0 used by later Nintendo games.
+        Uncompressed // No compression.
+    }
+
     public static class ArcUtilities
     {
         /// <summary>
         /// Loads an archive into a <see cref="VirtualFilesystemDirectory"/>, automatically de-compressing the archive if required.
+        /// 
         /// </summary>
-        /// <param name="filePath">Filepath of file to decompress and load.</param>
-        /// <returns><see cref="VirtualFilesystemDirectory"/> containing the contents, or null if not an archive.</returns>
+        /// <param name="filePath">Filepath of file to (optionally) decompress and load.</param>
+        /// <returns><see cref="VirtualFilesystemDirectory"/> containing the contents, or null if filepath is not a valid archive.</returns>
         public static VirtualFilesystemDirectory LoadArchive(string filePath)
         {
             if(string.IsNullOrEmpty(filePath))
@@ -28,17 +37,26 @@ namespace WArchiveTools
                 uint fileMagic = fileReader.ReadUInt32();
                 fileReader.BaseStream.Position = 0L; // Reset to the start so that the next thing to read it is at the start like it expects.
 
-                if (fileMagic == 0x59617A30) // Yaz0
+                switch(fileMagic)
                 {
-                    Yaz0 yaz0 = new Yaz0();
-                    decompressedFile = yaz0.Decode(fileReader);
-                }
-                else if (fileMagic == 0x52415243) // RARC
-                {
-                    // Copy the fileReader stream to a new memorystream.
-                    decompressedFile = new MemoryStream((int)fileReader.BaseStream.Length);
-                    fileReader.BaseStream.CopyTo(decompressedFile);
-                    decompressedFile.Position = 0L;
+                    case 0x59617A30: // Yaz0 Compression
+                        Yaz0 yaz0 = new Yaz0();
+                        decompressedFile = yaz0.Decode(fileReader);
+                        break;
+
+                    case 0x59617930: // Yay0 Compression
+                        throw new NotImplementedException("Yay0 decoding not currently supported.");
+                        break;
+
+                    case 0x52415243: // RARC - Uncompressed
+                        decompressedFile = new MemoryStream((int)fileReader.BaseStream.Length);
+                        fileReader.BaseStream.CopyTo(decompressedFile);
+
+                        // Copying modifies the decompressedFile's read head (places it at new location) so we rewind.
+                        decompressedFile.Position = 0L;
+                        break;
+                    default:
+                        throw new NotImplementedException(string.Format("Unknown magic: {0}. If this is a Nintendo archive, open an Issue on GitHub!", fileMagic.ToString("X8")));
                 }
             }
 
@@ -54,19 +72,43 @@ namespace WArchiveTools
             }
         }
 
-        public static void WriteArchive(string filePath, VirtualFilesystemDirectory root)
+        /// <summary>
+        /// Creates an archive out of the specified <see cref="VirtualFilesystemDirectory"/>, optionally compressing the resulting file.
+        /// </summary>
+        /// <param name="outputPath">Filepath to which to write the file to.</param>
+        /// <param name="root"><see cref="VirtualFilesystemDirectory"/> to create an archive out of.</param>
+        /// <param name="compression">Optionally compress with Yaz0 or Yay0 compression.</param>
+        public static void WriteArchive(string outputPath, VirtualFilesystemDirectory root, ArchiveCompression compression = ArchiveCompression.Uncompressed)
         {
-            if (string.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(outputPath))
                 throw new ArgumentNullException("filePath", "Cannot write archive to empty file path!");
 
-            // Create an archive structure from the given root and write it to file. Compression will be applied if specified.
+            if (root == null)
+                throw new ArgumentNullException("root", "Cannot write null VirtualFilesystemDirectory to archive.");
+
             RARC rarc = new RARC();
-            using (EndianBinaryWriter fileWriter = new EndianBinaryWriter(File.Open(filePath, FileMode.Create), Endian.Big))
+            MemoryStream outputData = new MemoryStream();
+
+            // Create an archive structure from the given root and write it to file. Compression will be applied if specified.
+            using (EndianBinaryWriter fileWriter = new EndianBinaryWriter(File.Open(outputPath, FileMode.Create), Endian.Big))
             {
                 byte[] rawData = rarc.WriteFile(root);
 
                 fileWriter.Write(rawData);
+                fileWriter.Seek(0, SeekOrigin.Begin);
+                fileWriter.BaseStream.CopyTo(outputData);
             }
+
+            switch(compression)
+            {
+                case ArchiveCompression.Yay0:
+                    throw new NotImplementedException("Yay0 Compression not implemented.");
+
+                case ArchiveCompression.Yaz0:
+                    throw new NotImplementedException("Yaz0 Compression not implemented.");
+            }
+
+            // ToDo: Write memory stream to disk when EndianBinaryWriter is removed from the RARC args.
         }
     }
 }
