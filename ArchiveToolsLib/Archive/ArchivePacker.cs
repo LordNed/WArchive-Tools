@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using WArchiveTools.FileSystem;
 
-namespace WArchiveTools.Archive
+namespace WArchiveTools.Archives
 {
     public partial class Archive
     {
