@@ -1,7 +1,7 @@
 ﻿using GameFormatReader.Common;
 using System;
 using System.IO;
-using WArchiveTools.Archive;
+using WArchiveTools.Archives;
 using WArchiveTools.Compression;
 using WArchiveTools.FileSystem;
 
@@ -14,7 +14,7 @@ namespace WArchiveTools
         Uncompressed // No compression.
     }
 
-    public static class ArcUtilities
+    public static class ArchiveUtilities
     {
         /// <summary>
         /// Loads an archive into a <see cref="VirtualFilesystemDirectory"/>, automatically de-compressing the archive if required.
@@ -44,7 +44,8 @@ namespace WArchiveTools
                         break;
 
                     case 0x59617930: // Yay0 Compression
-                        throw new NotImplementedException("Yay0 decoding not currently supported.");
+                        decompressedFile = Yay0.Decode(fileReader);
+                        break;
 
                     case 0x52415243: // RARC - Uncompressed
                         decompressedFile = new MemoryStream((int)fileReader.BaseStream.Length);
@@ -63,7 +64,7 @@ namespace WArchiveTools
                 return null;
 
             // Decompress the archive into the folder. It'll generate a sub-folder with the Archive's ROOT name.
-            Archive.Archive rarc = new Archive.Archive();
+            Archive rarc = new Archive();
             using (EndianBinaryReader reader = new EndianBinaryReader(decompressedFile, Endian.Big))
             {
                 return rarc.ReadFile(reader);
@@ -84,7 +85,7 @@ namespace WArchiveTools
             if (root == null)
                 throw new ArgumentNullException("root", "Cannot write null VirtualFilesystemDirectory to archive.");
 
-            Archive.Archive rarc = new Archive.Archive();
+            Archive rarc = new Archive();
             MemoryStream outputData = new MemoryStream();
 
             // Create an archive structure from the given root and write it to file. Compression will be applied if specified.

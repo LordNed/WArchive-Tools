@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WArchiveTools.Archive;
+using WArchiveTools.Archives;
 using WArchiveTools.Compression;
 using WArchiveTools.FileSystem;
 

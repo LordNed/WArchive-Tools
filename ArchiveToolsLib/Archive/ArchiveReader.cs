@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using WArchiveTools.FileSystem;
 
-namespace WArchiveTools.Archive
+namespace WArchiveTools.Archives
 {
     public partial class Archive
     {

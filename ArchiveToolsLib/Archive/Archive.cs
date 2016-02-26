@@ -1,4 +1,4 @@
-﻿namespace WArchiveTools.Archive
+﻿namespace WArchiveTools.Archives
 {
     public partial class Archive
     {
