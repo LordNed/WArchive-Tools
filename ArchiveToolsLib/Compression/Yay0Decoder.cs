@@ -1,4 +1,5 @@
 ﻿using GameFormatReader.Common;
+using System;
 using System.IO;
 
 namespace WArchiveTools.Compression
@@ -7,6 +8,9 @@ namespace WArchiveTools.Compression
     {
         public static MemoryStream Decode(EndianBinaryReader reader)
         {
+            if (reader == null)
+                throw new ArgumentNullException("reader", "Cannot decompress from null reader");
+
             if (reader.ReadUInt32() != 0x59617930) // "Yay0" Magic
             {
                 throw new InvalidDataException("Invalid Magic, not a Yay0 File");

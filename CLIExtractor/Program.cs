@@ -18,6 +18,16 @@ namespace CLIExtractor
 
         static void Main(string[] args)
         {
+            var encoded = Yay0.Encode(new MemoryStream(File.ReadAllBytes("C:/Users/Matt/Downloads/room_02_decoded.arc")));
+
+            encoded.Seek(0, SeekOrigin.Begin);
+            var output = File.Create("C:/Users/Matt/Downloads/room_02_reencoded.arc");
+            encoded.BaseStream.CopyTo(output);
+
+            return;
+
+
+
             if (args.Length == 0)
             {
                 Console.WriteLine("===== RARC Extractor =====");

@@ -1,4 +1,5 @@
 ﻿using GameFormatReader.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using WArchiveTools.FileSystem;
@@ -14,6 +15,9 @@ namespace WArchiveTools.Archives
 
         public byte[] WriteFile(VirtualFilesystemDirectory root)
         {
+            if (root == null)
+                throw new ArgumentNullException("root", "Cannot write null VirtualFilesystemDirectory to file!");
+
             // These will hold our data until we're ready to put it in a byte[]
             exportNodes = new List<Node>();
             exportFileEntries = new List<FileEntry>();
