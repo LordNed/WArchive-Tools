@@ -18,13 +18,13 @@ namespace CLIExtractor
 
         static void Main(string[] args)
         {
-            var encoded = Yay0.Encode(new MemoryStream(File.ReadAllBytes("C:/Users/Matt/Downloads/room_02_decoded.arc")));
+            //var encoded = Yay0.Encode(new MemoryStream(File.ReadAllBytes("C:/Users/Matt/Downloads/room_02_decoded.arc")));
 
-            encoded.Seek(0, SeekOrigin.Begin);
-            var output = File.Create("C:/Users/Matt/Downloads/room_02_reencoded.arc");
-            encoded.BaseStream.CopyTo(output);
+            //encoded.Seek(0, SeekOrigin.Begin);
+            //var output = File.Create("C:/Users/Matt/Downloads/room_02_reencoded.arc");
+            //encoded.BaseStream.CopyTo(output);
 
-            return;
+ //           return;
 
 
 
@@ -159,6 +159,13 @@ namespace CLIExtractor
                             Console.Write("Archive compressed with Yaz0, decompressing... ");
 
                         decompressedFile = Yaz0.Decode(fileReader);
+                    }
+                    else if(fileMagic == 0x59617930) // Yay0
+                    {
+                        if (m_verboseOutput)
+                            Console.WriteLine("Archive compressed with Yay0, decompressing...");
+
+                        decompressedFile = Yay0.Decode(fileReader);
                     }
                     else if (fileMagic == 0x52415243) // RARC
                     {
