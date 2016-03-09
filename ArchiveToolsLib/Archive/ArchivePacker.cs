@@ -235,7 +235,7 @@ namespace WArchiveTools.Archives
                         NameHashcode = HashName(virtFile.Name + virtFile.Extension),
                         Type = 0x11,
                         Name = virtFile.Name + virtFile.Extension,
-                        Data = virtFile.File.GetData(),
+                        Data = virtFile.Data
                     };
 
                     dirFileEntries.Add(file);

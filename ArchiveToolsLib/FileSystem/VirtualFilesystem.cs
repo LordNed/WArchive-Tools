@@ -158,7 +158,7 @@ namespace WArchiveTools.FileSystem
                     {
                         using (EndianBinaryWriter writer = new EndianBinaryWriter(File.Create(filePath), Endian.Big))
                         {
-                            writer.Write(vfFile.File.GetData());
+                            writer.Write(vfFile.Data);
                         }
                     }
                     catch (Exception ex)
@@ -192,7 +192,7 @@ namespace WArchiveTools.FileSystem
                     string fileExt = Path.GetExtension(diskFile.Name);
 
                     byte[] data = reader.ReadBytes((int)reader.BaseStream.Length);
-                    VirtualFilesystemFile vfFile = new VirtualFilesystemFile(fileName, fileExt, new VirtualFileContents(data));
+                    VirtualFilesystemFile vfFile = new VirtualFilesystemFile(fileName, fileExt, data);
                     dir.Children.Add(vfFile);
                 }
             }
@@ -209,7 +209,7 @@ namespace WArchiveTools.FileSystem
         /// <summary>
         /// Contents of the file that this <see cref="VirtualFilesystemFile"/> represents.
         /// </summary>
-        public VirtualFileContents File;
+        public byte[] Data;
 
         /// <summary>
         /// Extension of the file including the period.
@@ -231,31 +231,16 @@ namespace WArchiveTools.FileSystem
         /// </summary>
         /// <param name="name">Name of the file (without extension)</param>
         /// <param name="extension">Extension of the file (including period)</param>
-        /// <param name="file">Contents of the file for this node to store.</param>
-        public VirtualFilesystemFile(string name, string extension, VirtualFileContents file) : base (NodeType.File, name)
+        /// <param name="data">Contents of the file for this node to store.</param>
+        public VirtualFilesystemFile(string name, string extension, byte[] data) : base (NodeType.File, name)
         {
             Extension = extension;
-            File = file;
+            Data = data;
         }
 
         public override string ToString()
         {
-            return string.Format("[File] {0}", Name);
-        }
-    }
-
-    public sealed class VirtualFileContents
-    {
-        private byte[] m_data;
-
-        public VirtualFileContents(byte[] data)
-        {
-            m_data = data;
-        }
-
-        public byte[] GetData()
-        {
-            return m_data;
+            return string.Format("[File] {0}.{1}", Name, Extension);
         }
     }
 }

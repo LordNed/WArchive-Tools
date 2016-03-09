@@ -85,8 +85,7 @@ namespace WArchiveTools.Archives
                         string fileName = Path.GetFileNameWithoutExtension(node.Entries[i].Name);
                         string extension = Path.GetExtension(node.Entries[i].Name);
 
-                        var vfFileContents = new VirtualFileContents(node.Entries[i].Data);
-                        VirtualFilesystemFile vfFile = new VirtualFilesystemFile(fileName, extension, vfFileContents);
+                        VirtualFilesystemFile vfFile = new VirtualFilesystemFile(fileName, extension, node.Entries[i].Data);
                         curDir.Children.Add(vfFile);
                     }
 
