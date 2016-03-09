@@ -4,8 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GCMRebuilderUI"
+        xmlns:viewmodel="clr-namespace:GCMRebuilderUI.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="430" Width="690" MinHeight="430" MinWidth="690" ResizeMode="CanResizeWithGrip">
+        Title="{Binding Path=WindowTitle}" Height="430" Width="690" MinHeight="430" MinWidth="690" ResizeMode="CanResizeWithGrip">
+    <Window.DataContext>
+            <viewmodel:MainWindowViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -14,14 +18,18 @@
 
         <!-- File Menu Strip at Top -->
         <Menu IsMainMenu="True" Grid.Row="0">
-            <MenuItem Header="_File" />
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Command="{Binding Path=OpenImage}"/>
+                <Separator/>
+                <MenuItem Header="E_xit" Command="{Binding Path=ExitApplication}"/>
+            </MenuItem>
             <MenuItem Header="_Edit" />
             <MenuItem Header="_View" />
             <MenuItem Header="_Help" />
         </Menu>
         
         <!-- Window Contents -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" IsEnabled="{Binding Path=IsFileLoaded}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="365"/>
                 <ColumnDefinition Width="5"/>
@@ -128,9 +136,6 @@
                         <TextBox Grid.Column="1" Grid.Row="8" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
 
                     </Grid>
-
-
-
                 </GroupBox>
             </Grid>
 
