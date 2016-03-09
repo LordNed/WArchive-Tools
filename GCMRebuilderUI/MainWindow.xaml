@@ -5,131 +5,147 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GCMRebuilderUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="422.901" Width="934.155">
+        Title="MainWindow" Height="430" Width="690" MinHeight="430" MinWidth="690" ResizeMode="CanResizeWithGrip">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <!-- File Menu Strip at Top -->
+        <Menu IsMainMenu="True" Grid.Row="0">
+            <MenuItem Header="_File" />
+            <MenuItem Header="_Edit" />
+            <MenuItem Header="_View" />
+            <MenuItem Header="_Help" />
+        </Menu>
+        
+        <!-- Window Contents -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="365"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*" MinWidth="300"/>
+            </Grid.ColumnDefinitions>
 
-            <!-- Details Regarding the GameCube Disk Image -->
-            <GroupBox Header="GCM Details" Grid.Row="0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*" MinWidth="150"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*" MinWidth="50"/>
-                    </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <!-- Internal Long Name -->
-                    <Label Grid.Column="0" Grid.Row="0" Content="Name:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox Grid.Column="1" Grid.Row="0" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+                <!-- Details Regarding the GameCube Disk Image -->
+                <GroupBox Header="GCM Details" Grid.Row="0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" MinWidth="150"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" MinWidth="50"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Game Code -->
-                    <Label Grid.Column="0" Grid.Row="1" Content="Game Code:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <!-- Internal Long Name -->
+                        <Label Grid.Column="0" Grid.Row="0" Content="Name:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
 
-                    <!-- Developer Code -->
-                    <Label Grid.Column="0" Grid.Row="2" Content="Game Code:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox Grid.Column="1" Grid.Row="2" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+                        <!-- Game Code -->
+                        <Label Grid.Column="0" Grid.Row="1" Content="Game Code:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <TextBox Grid.Column="1" Grid.Row="1" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
 
-
-                    <!-- Disc ID -->
-                    <Label Grid.Column="2" Grid.Row="0" Content="Name:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox Grid.Column="3" Grid.Row="0" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <!-- Region -->
-                    <Label Grid.Column="2" Grid.Row="1" Content="Game Code:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox Grid.Column="3" Grid.Row="1" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <!-- Date -->
-                    <Label Grid.Column="2" Grid.Row="2" Content="Game Code:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox Grid.Column="3" Grid.Row="2" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                </Grid>
-            </GroupBox>
-
-            <!-- Details Regarding the Disk Banner -->
-            <GroupBox Header="Banner Details" Grid.Row="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Banner Filename -->
-                    <Label Grid.Column="0" Grid.Row="0" Content="File:" />
-                    <ComboBox Grid.Column="1" Grid.Row="0" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <!-- Banner Version Identifier -->
-                    <Label Grid.Column="0" Grid.Row="1" Content="Version:" />
-                    <TextBox Grid.Column="1" Grid.Row="1" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <!-- Banner Language Identifier -->
-                    <Label Grid.Column="0" Grid.Row="2" Content="Language:" />
-                    <ComboBox Grid.Column="1" Grid.Row="2" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <Label Grid.Column="0" Grid.Row="3" Content="Short Name:"/>
-                    <TextBox Grid.Column="1" Grid.Row="3" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <Label Grid.Column="0" Grid.Row="4" Content="Short Developer Name:"/>
-                    <TextBox Grid.Column="1" Grid.Row="4" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <Label Grid.Column="0" Grid.Row="5" Content="Long Name:"/>
-                    <TextBox Grid.Column="1" Grid.Row="5" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <Label Grid.Column="0" Grid.Row="6" Content="Long Developer Name:"/>
-                    <TextBox Grid.Column="1" Grid.Row="6" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <Label Grid.Column="0" Grid.Row="7" Content="Description:"/>
-                    <TextBox Grid.Column="1" Grid.Row="7" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                    <Label Grid.Column="0" Grid.Row="8" Content="Banner:"/>
-                    <TextBox Grid.Column="1" Grid.Row="8" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
-
-                </Grid>
+                        <!-- Developer Code -->
+                        <Label Grid.Column="0" Grid.Row="2" Content="Game Code:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <TextBox Grid.Column="1" Grid.Row="2" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
 
 
+                        <!-- Disc ID -->
+                        <Label Grid.Column="2" Grid.Row="0" Content="Name:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <TextBox Grid.Column="3" Grid.Row="0" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
 
-            </GroupBox>
+                        <!-- Region -->
+                        <Label Grid.Column="2" Grid.Row="1" Content="Game Code:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <TextBox Grid.Column="3" Grid.Row="1" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                        <!-- Date -->
+                        <Label Grid.Column="2" Grid.Row="2" Content="Game Code:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <TextBox Grid.Column="3" Grid.Row="2" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                    </Grid>
+                </GroupBox>
+
+                <!-- Details Regarding the Disk Banner -->
+                <GroupBox Header="Banner Details" Grid.Row="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Banner Filename -->
+                        <Label Grid.Column="0" Grid.Row="0" Content="File:" />
+                        <ComboBox Grid.Column="1" Grid.Row="0" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                        <!-- Banner Version Identifier -->
+                        <Label Grid.Column="0" Grid.Row="1" Content="Version:" />
+                        <TextBox Grid.Column="1" Grid.Row="1" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                        <!-- Banner Language Identifier -->
+                        <Label Grid.Column="0" Grid.Row="2" Content="Language:" />
+                        <ComboBox Grid.Column="1" Grid.Row="2" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                        <Label Grid.Column="0" Grid.Row="3" Content="Short Name:"/>
+                        <TextBox Grid.Column="1" Grid.Row="3" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                        <Label Grid.Column="0" Grid.Row="4" Content="Short Developer Name:"/>
+                        <TextBox Grid.Column="1" Grid.Row="4" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                        <Label Grid.Column="0" Grid.Row="5" Content="Long Name:"/>
+                        <TextBox Grid.Column="1" Grid.Row="5" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                        <Label Grid.Column="0" Grid.Row="6" Content="Long Developer Name:"/>
+                        <TextBox Grid.Column="1" Grid.Row="6" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                        <Label Grid.Column="0" Grid.Row="7" Content="Description:"/>
+                        <TextBox Grid.Column="1" Grid.Row="7" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                        <Label Grid.Column="0" Grid.Row="8" Content="Banner:"/>
+                        <TextBox Grid.Column="1" Grid.Row="8" MaxHeight="22" VerticalAlignment="Top" Margin="0,8,0,0"/>
+
+                    </Grid>
+
+
+
+                </GroupBox>
+            </Grid>
+
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="3" Margin="0,5,0,5" ResizeDirection="Columns"/>
+
+            <!-- Treeview for Exploring the Image -->
+            <Grid Grid.Column="2">
+                <GroupBox Header="Explorer">
+                    <Grid>
+                        <TreeView/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
         </Grid>
-
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-
-        <!-- Treeview for Exploring the Image -->
-        <Grid Grid.Column="2">
-            <GroupBox Header="Explorer">
-                <Grid>
-                    <TreeView/>
-                </Grid>
-            </GroupBox>
-        </Grid>
-
 
     </Grid>
 </Window>
