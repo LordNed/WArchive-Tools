@@ -1,5 +1,5 @@
 ﻿using GCMRebuilderUI.Commands;
-using System;
+using GCMRebuilderUI.Model;
 using System.Windows;
 using System.Windows.Input;
 
@@ -29,9 +29,24 @@ namespace GCMRebuilderUI.ViewModel
         }
         #endregion
 
-        public bool IsFileLoaded { get; set; }
+        public bool IsFileLoaded
+        {
+            get { return Image != null; }
+        }
+
+        public DiskImage Image
+        {
+            get { return m_diskImage; }
+            set
+            {
+                m_diskImage = value;
+                OnPropertyChanged("Image");
+                OnPropertyChanged("IsFileLoaded");
+            }
+        }
 
         private string m_windowTitle;
+        private DiskImage m_diskImage;
 
         public MainWindowViewModel()
         {
@@ -40,7 +55,7 @@ namespace GCMRebuilderUI.ViewModel
 
         private void OnUserRequestOpenImage()
         {
-            throw new NotImplementedException();
+            Image = new DiskImage();
         }
 
         private void OnUserRequestExitApplication()

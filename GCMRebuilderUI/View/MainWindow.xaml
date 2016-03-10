@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GCMRebuilderUI"
         xmlns:viewmodel="clr-namespace:GCMRebuilderUI.ViewModel"
+        xmlns:vfs="clr-namespace:WArchiveTools.FileSystem;assembly=WArchiveTools"
         mc:Ignorable="d"
         Title="{Binding Path=WindowTitle}" Height="430" Width="690" MinHeight="430" MinWidth="690" ResizeMode="CanResizeWithGrip">
     <Window.DataContext>
@@ -29,7 +30,7 @@
         </Menu>
         
         <!-- Window Contents -->
-        <Grid Grid.Row="1" IsEnabled="{Binding Path=IsFileLoaded}">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="365"/>
                 <ColumnDefinition Width="5"/>
@@ -145,7 +146,14 @@
             <Grid Grid.Column="2">
                 <GroupBox Header="Explorer">
                     <Grid>
-                        <TreeView/>
+                        <Label DataContext="{Binding Path=Image.Data}" Content="{Binding Path=Name}" Background="Red"/>
+                        <TreeView ItemsSource="{Binding Path=Image.Data}" Background="Green">
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type vfs:VirtualFilesystemDirectory}">
+                                    <TreeViewItem Header="{Binding Path=Name}"/>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
                     </Grid>
                 </GroupBox>
             </Grid>
