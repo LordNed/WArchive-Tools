@@ -107,6 +107,49 @@ namespace WArchiveTools.FileSystem
             return validFiles;
         }
 
+        public VirtualFilesystemFile GetFileAtPath(string relativePath)
+        {
+            // Search for the next directory indicator (Either '/' or '\') to see if we need to navigate into a subfolder.
+            int dirIndicator = relativePath.IndexOf("/");
+            if (dirIndicator < 0)
+                dirIndicator = relativePath.IndexOf("\\");
+
+            // There is a sub-folder to navigate into. Search our children for this folder.
+            if(dirIndicator >= 0)
+            {
+                string folderName = relativePath.Substring(0, dirIndicator);
+                foreach(var child in Children)
+                {
+                    if (child.Type == NodeType.File)
+                        continue;
+
+                    if(child.Name == folderName)
+                    {
+                        return ((VirtualFilesystemDirectory)child).GetFileAtPath(relativePath.Substring(dirIndicator+1));
+                    }
+                }
+
+                // They requested a directory which doesn't exist as a child of this current directory. Thus, our search ends here.
+                return null;
+            }
+            else
+            {
+                // We're looking for children.
+                foreach(var child in Children)
+                {
+                    if (child.Type == NodeType.Directory)
+                        continue;
+
+                    VirtualFilesystemFile file = (VirtualFilesystemFile)child;
+                    if (file.NameWithExtension == relativePath)
+                        return file;
+                }
+
+                // They requested a file which doesn't exist as a child of this current directory.
+                return null;
+            }
+        }
+
         /// <summary>
         /// Recursively iterates through the Virtual Filesystem directory and creates directories on disk for the
         /// child directories and writes <see cref="VirtualFilesystemFile"/>'s to disk in their appropriate location.
@@ -224,6 +267,11 @@ namespace WArchiveTools.FileSystem
             }
         }
 
+        public string NameWithExtension
+        {
+            get { return string.Format("{0}{1}", Name, Extension); }
+        }
+
         private string m_extension;
 
         /// <summary>
@@ -240,7 +288,7 @@ namespace WArchiveTools.FileSystem
 
         public override string ToString()
         {
-            return string.Format("[File] {0}.{1}", Name, Extension);
+            return string.Format("[File] {0}{1}", Name, Extension);
         }
     }
 }
