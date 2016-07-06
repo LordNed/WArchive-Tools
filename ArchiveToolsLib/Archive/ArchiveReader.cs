@@ -1,4 +1,5 @@
 ﻿using GameFormatReader.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -14,15 +15,22 @@ namespace WArchiveTools.Archives
                 throw new InvalidDataException("Invalid Magic, not a RARC File");
 
             uint fileSize = reader.ReadUInt32();
-            reader.SkipUInt32(); // Unknown
+            uint unknown0 = reader.ReadUInt32(); // Unknown
             uint dataOffset = reader.ReadUInt32() + 0x20;
-            reader.Skip(16); // Unknown - 4 unsigned ints
+            uint unknown1 = reader.ReadUInt32(); // Unknown - 4 unsigned ints
+            uint unknown2 = reader.ReadUInt32(); // Unknown - 4 unsigned ints
+            uint unknown3 = reader.ReadUInt32(); // Unknown - 4 unsigned ints
+            uint unknown4 = reader.ReadUInt32(); // Unknown - 4 unsigned ints
             uint numNodes = reader.ReadUInt32();
-            reader.Skip(8); // Unknown - 2 unsigned ints
+            uint unknown5 = reader.ReadUInt32(); // Unknown - 2 unsigned ints
+            uint unknown6 = reader.ReadUInt32(); // Unknown - 2 unsigned ints
             uint fileEntryOffset = reader.ReadUInt32() + 0x20;
-            reader.SkipUInt32(); // Unknown
+            uint unknown7 = reader.ReadUInt32(); reader.SkipUInt32(); // Unknown
             uint stringTableOffset = reader.ReadUInt32() + 0x20;
-            reader.Skip(8); // Unknown - 2 unsigned ints.
+            uint unknown8 = reader.ReadUInt32(); reader.SkipUInt32(); // Unknown
+            uint unknown9 = reader.ReadUInt32(); reader.SkipUInt32(); // Unknown
+
+            Console.WriteLine("U0: {0} U1: {1} U2: {2} U3: {3} U4: {4} U5: {5} U6: {6} U7: {7} U8: {8} U9: {9}", unknown0, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9);
 
             // Read all of the node headers.
             Node[] nodes = new Node[numNodes];
