@@ -47,8 +47,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EndianBinaryStreams">
-      <HintPath>..\EndianBinaryStreams.dll</HintPath>
+    <Reference Include="GameFormatReader">
+      <HintPath>..\lib\GameFormatReader.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
