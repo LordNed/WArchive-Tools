@@ -51,5 +51,50 @@ namespace WArchiveTools
             // Return the decompressed file
             return new EndianBinaryReader(decompressedFile, Endian.Big);
         }
+
+        /// <summary>
+        /// Creates an new file out of the specified <see cref="EndianBinaryWriter"/>, optionally compressing the resulting file.
+        /// </summary>
+        /// <param name="outputPath">Filepath to which to write the file to.</param>
+        /// <param name="stream"><see cref="EndianBinaryWriter"/> to create an archive out of.</param>
+        /// <param name="compression">Optionally compress with Yaz0 or Yay0 compression.</param>
+        public static void SaveArchive(string outputPath, EndianBinaryWriter stream, ArchiveCompression compression = ArchiveCompression.Uncompressed)
+        {
+            if (string.IsNullOrEmpty(outputPath))
+                throw new ArgumentNullException("filePath", "Cannot write archive to empty file path!");
+
+            if (stream == null)
+                throw new ArgumentNullException("root", "Cannot write null EndianBinaryWriter to archive.");
+
+            // Copy our EndianBinaryWriter to a new MemoryStream so we can compress it in memory before writing it to disk.
+            MemoryStream uncompressedStream = new MemoryStream();
+            stream.BaseStream.Seek(0, SeekOrigin.Begin);
+            stream.BaseStream.CopyTo(uncompressedStream);
+
+            MemoryStream compressedStream = new MemoryStream();
+
+            switch (compression)
+            {
+                case ArchiveCompression.Yay0:
+                    throw new NotImplementedException("Yay0 Compression not implemented.");
+                    //compressedStream = Yay0.Encode(uncompressedStream);
+                    //break;
+
+                case ArchiveCompression.Yaz0:
+                    EndianBinaryWriter encoded = Yaz0.Encode(uncompressedStream);
+                    encoded.Seek(0, SeekOrigin.Begin);
+                    encoded.BaseStream.CopyTo(compressedStream);
+                    break;
+
+                case ArchiveCompression.Uncompressed:
+
+                    // Well, that was easy.
+                    compressedStream = uncompressedStream;
+                    break;
+            }
+
+            compressedStream.Seek(0, SeekOrigin.Begin);
+            compressedStream.WriteTo(File.Create(outputPath));
+        }
     }
 }
