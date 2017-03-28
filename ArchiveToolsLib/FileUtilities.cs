@@ -89,7 +89,8 @@ namespace WArchiveTools
             }
 
             compressedStream.Seek(0, SeekOrigin.Begin);
-            compressedStream.WriteTo(File.Create(outputPath));
+            using (var fileStream = File.Create(outputPath))
+                compressedStream.WriteTo(fileStream);
         }
     }
 }
