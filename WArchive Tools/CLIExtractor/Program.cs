@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WArchiveTools.rarc;
-using WArchiveTools.yaz0;
-using WEditor.FileSystem;
+using WArchiveTools.Archives;
+using WArchiveTools.Compression;
+using WArchiveTools.FileSystem;
 
 namespace CLIExtractor
 {
@@ -148,8 +148,7 @@ namespace CLIExtractor
                         if (m_verboseOutput)
                             Console.Write("Archive compressed with Yaz0, decompressing... ");
 
-                        Yaz0 yaz0 = new Yaz0();
-                        decompressedFile = yaz0.Decode(fileReader);
+                        decompressedFile = Yaz0.Decode(fileReader);
                     }
                     else if (fileMagic == 0x52415243) // RARC
                     {
@@ -168,7 +167,7 @@ namespace CLIExtractor
                 }
 
                 // Decompress the archive into the folder. It'll generate a sub-folder with the Archive's ROOT name.
-                RARC rarc = new RARC();
+                Archive rarc = new Archive();
                 using (EndianBinaryReader reader = new EndianBinaryReader(decompressedFile, Endian.Big))
                 {
                     VirtualFilesystemDirectory root = rarc.ReadFile(reader);
@@ -276,7 +275,7 @@ namespace CLIExtractor
 
         public static string FindCommonPath(string separator, List<string> paths)
         {
-            string CommonPath = String.Empty;
+            string CommonPath = string.Empty;
             List<string> SeparatedPath = paths
                 .First(str => str.Length == paths.Max(st2 => st2.Length))
                 .Split(new string[] { separator }, StringSplitOptions.RemoveEmptyEntries)

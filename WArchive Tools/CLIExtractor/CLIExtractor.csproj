@@ -78,7 +78,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WArchiveTools\ArchiveToolsLib.csproj">
+    <ProjectReference Include="..\ArchiveToolsLib\ArchiveToolsLib.csproj">
       <Project>{b715685d-1603-4ce3-8ea1-552b01c2ba4b}</Project>
       <Name>ArchiveToolsLib</Name>
     </ProjectReference>
