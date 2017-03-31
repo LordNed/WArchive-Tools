@@ -41,6 +41,10 @@
     <Compile Include="ArcUtilities.cs" />
     <Compile Include="FileSystem\VirtualFilesystem.cs" />
     <Compile Include="FileUtilities.cs" />
+    <Compile Include="ISOUtilities.cs" />
+    <Compile Include="ISO\ISO.cs" />
+    <Compile Include="ISO\ISOReader.cs" />
+    <Compile Include="ISO\ISOWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Archive\Archive.cs" />
     <Compile Include="Archive\ArchivePacker.cs" />
