@@ -39,8 +39,22 @@ namespace WArchiveTools.FileSystem
             }
         }
 
+        /// <summary>
+        /// The ID of the node. If a <see cref="VirtualFilesystemDirectory"/> the ID is -1. If a <see cref="VirtualFilesystemFile"/> then it is a non-negative value.  
+        /// </summary>
+        public ushort NodeID
+        {
+            get { return m_nodeID; }
+            set
+            {
+                m_nodeID = value;
+                OnPropertyChanged("NodeID");
+            }
+        }
+
         private NodeType m_type;
         private string m_name;
+        private ushort m_nodeID;
 
         protected VirtualFilesystemNode(NodeType type, string name)
         {
@@ -105,6 +119,33 @@ namespace WArchiveTools.FileSystem
             }
 
             return validFiles;
+        }
+
+        /// <summary>
+        /// Returns the file whose node has the given NodeID, or null if there is no such file. Searches
+        /// all child directories recursively to look for the file.
+        /// </summary>
+        /// <param name="id">NodeID</param>
+        /// <returns>File with a matching NodeID</returns>
+        public VirtualFilesystemFile FindByID(ushort id)
+        {
+            VirtualFilesystemFile foundFile = null;
+
+            foreach (VirtualFilesystemNode child in Children)
+            {
+                if (child.Type == NodeType.File)
+                {
+                    if (child.NodeID == id)
+                        foundFile = child as VirtualFilesystemFile;
+                }
+                else if (child.Type == NodeType.Directory)
+                {
+                    VirtualFilesystemDirectory dir = (VirtualFilesystemDirectory)child;
+                    foundFile = dir.FindByID(id);
+                }
+            }
+
+            return foundFile;
         }
 
         /// <summary>

@@ -76,6 +76,7 @@ namespace WArchiveTools.Archives
                     {
                         node.Entries[i].SubDirIndex = entryDataOffset;
                         var newSubDir = allDirs[(int)entryDataOffset];
+                        newSubDir.NodeID = node.Entries[i].ID;
                         curDir.Children.Add(newSubDir);
                     }
                     else
@@ -87,6 +88,7 @@ namespace WArchiveTools.Archives
 
                         var vfFileContents = new VirtualFileContents(node.Entries[i].Data);
                         VirtualFilesystemFile vfFile = new VirtualFilesystemFile(fileName, extension, vfFileContents);
+                        vfFile.NodeID = node.Entries[i].ID;
                         curDir.Children.Add(vfFile);
                     }
 
