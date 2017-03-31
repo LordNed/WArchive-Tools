@@ -1,7 +1,5 @@
 ﻿using GameFormatReader.Common;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using WArchiveTools.FileSystem;
@@ -16,24 +14,15 @@ namespace WArchiveTools.Archives
                 throw new InvalidDataException("Invalid Magic, not a RARC File");
 
             uint fileSize = reader.ReadUInt32();
-            uint unknown0 = reader.ReadUInt32(); // Unknown
+            reader.SkipUInt32(); // Unknown
             uint dataOffset = reader.ReadUInt32() + 0x20;
-            uint unknown1 = reader.ReadUInt32(); // Unknown - 4 unsigned ints
-            uint unknown2 = reader.ReadUInt32(); // Unknown - 4 unsigned ints
-            uint unknown3 = reader.ReadUInt32(); // Unknown - 4 unsigned ints
-            uint unknown4 = reader.ReadUInt32(); // Unknown - 4 unsigned ints
+            reader.Skip(16); // Unknown - 4 unsigned ints
             uint numNodes = reader.ReadUInt32();
-            uint unknown5 = reader.ReadUInt32(); // Unknown - 2 unsigned ints
-            uint unknown6 = reader.ReadUInt32();
+            reader.Skip(8); // Unknown - 2 unsigned ints
             uint fileEntryOffset = reader.ReadUInt32() + 0x20;
-            uint unknown7 = reader.ReadUInt32(); // Unknown
+            reader.SkipUInt32(); // Unknown
             uint stringTableOffset = reader.ReadUInt32() + 0x20;
-            uint unknown8 = reader.ReadUInt32(); // Unknown
-            uint unknown9 = reader.ReadUInt32(); // Unknown
-
-#if ALT_EXTRACTION_METHOD
-            Console.WriteLine("U0: {0} U1: {1} U2: {2} U3: {3} U4: {4} U5: {5} U6: {6} U7: {7} U8: {8} U9: {9}", unknown0, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9);
-#endif
+            reader.Skip(8); // Unknown - 2 unsigned ints.
 
             // Read all of the node headers.
             Node[] nodes = new Node[numNodes];
@@ -72,7 +61,7 @@ namespace WArchiveTools.Archives
                     node.Entries[i].ID = reader.ReadUInt16();
                     node.Entries[i].NameHashcode = reader.ReadUInt16();
                     node.Entries[i].Type = reader.ReadByte();
-                    Debug.Assert(reader.ReadByte() == 0); // Padding
+                    reader.SkipByte(); // Padding
                     node.Entries[i].Name = ReadStringAtOffset(reader, stringTableOffset, reader.ReadUInt16());
 
                     // Skip these ones cause I don't know how computers work.
@@ -82,18 +71,12 @@ namespace WArchiveTools.Archives
                     uint entryDataOffset = reader.ReadUInt32();
                     uint dataSize = reader.ReadUInt32();
 
-                    // There's a couple of archives in Wind Waker which seem to have an ID that is set to zero to indicate a directory.
-                    // However, this breaks literally every other archive in Wind Waker. Until we have a better idea of what it is,
-                    // we'll just have to make a manual build of the extract to extract those.
-#if ALT_EXTRACTION_METHOD
-                    if(node.Entries[i].IsDirectory || node.Entries[i].ID == 0)
-#else
+                    // If it's a directory, then entryDataOffset contains the index of the parent node
                     if (node.Entries[i].IsDirectory)
-#endif
                     {
-                        // If it's a directory, then entryDataOffset contains the index of the parent node
                         node.Entries[i].SubDirIndex = entryDataOffset;
                         var newSubDir = allDirs[(int)entryDataOffset];
+                        newSubDir.NodeID = node.Entries[i].ID;
                         curDir.Children.Add(newSubDir);
                     }
                     else
@@ -103,11 +86,13 @@ namespace WArchiveTools.Archives
                         string fileName = Path.GetFileNameWithoutExtension(node.Entries[i].Name);
                         string extension = Path.GetExtension(node.Entries[i].Name);
 
-                        VirtualFilesystemFile vfFile = new VirtualFilesystemFile(fileName, extension, node.Entries[i].Data);
+                        var vfFileContents = new VirtualFileContents(node.Entries[i].Data);
+                        VirtualFilesystemFile vfFile = new VirtualFilesystemFile(fileName, extension, vfFileContents);
+                        vfFile.NodeID = node.Entries[i].ID;
                         curDir.Children.Add(vfFile);
                     }
 
-                    Debug.Assert(reader.ReadUInt32() == 0); // Padding
+                    reader.SkipInt32(); // Padding
                 }
             }
 
