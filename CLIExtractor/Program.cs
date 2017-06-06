@@ -150,7 +150,7 @@ namespace CLIExtractor
 
                         decompressedFile = Yaz0.Decode(fileReader);
                     }
-                    if (fileMagic == 0x59617930) // Yaz0
+                    if (fileMagic == 0x59617930) // Yay0
                     {
                         if (m_verboseOutput)
                             Console.Write("Archive compressed with Yay0, decompressing... ");
