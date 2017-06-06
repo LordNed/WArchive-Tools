@@ -60,7 +60,7 @@ namespace WArchiveTools.Archives
                     node.Entries[i] = new FileEntry();
                     node.Entries[i].ID = reader.ReadUInt16();
                     node.Entries[i].NameHashcode = reader.ReadUInt16();
-                    node.Entries[i].Type = reader.ReadByte();
+                    node.Entries[i].Flags = reader.ReadByte();
                     reader.SkipByte(); // Padding
                     node.Entries[i].Name = ReadStringAtOffset(reader, stringTableOffset, reader.ReadUInt16());
 
