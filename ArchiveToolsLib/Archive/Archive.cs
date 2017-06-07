@@ -33,15 +33,15 @@
             public ushort ID { get; internal set; }
             /// <summary>String hash of the <see cref="Name"/> field.</summary>
             public ushort NameHashcode { get; internal set; }
-            /// <summary>Type of entry. 0x2 = Directory, 0x11 = File.</summary>
-            public byte Type { get; internal set; }
+            /// <summary>Various bits of info. bit 0 (& 1) tells if the entry is a file, bit 1 (& 2 >> 1) tells if it's a directory.</summary>
+            public byte Flags { get; internal set; }
             /// <summary>File/subdirectory name string table offset.</summary>
             public string Name { get; internal set; }
             /// <summary>Data bytes. If this entry is a directory, it will be the node index.</summary>
             public byte[] Data { get; internal set; }
 
             /// <summary>Whether or not this entry is a directory.</summary>
-            public bool IsDirectory { get { return ID == 0xFFFF; } }
+            public bool IsDirectory { get { return (Flags & 2) >> 1 == 1; } }
             /// <summary>Node index representing the subdirectory. Will only be non-zero if IsDirectory is true.</summary>
             public uint SubDirIndex { get; internal set; }
 

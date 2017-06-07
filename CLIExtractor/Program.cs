@@ -150,6 +150,13 @@ namespace CLIExtractor
 
                         decompressedFile = Yaz0.Decode(fileReader);
                     }
+                    if (fileMagic == 0x59617930) // Yay0
+                    {
+                        if (m_verboseOutput)
+                            Console.Write("Archive compressed with Yay0, decompressing... ");
+
+                        decompressedFile = Yay0.Decode(fileReader);
+                    }
                     else if (fileMagic == 0x52415243) // RARC
                     {
                         // Copy the fileReader stream to a new memorystream.

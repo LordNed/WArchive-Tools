@@ -114,7 +114,7 @@ namespace WArchiveTools.Archives
 
                 writer.Write(entry.NameHashcode);
 
-                writer.Write(entry.Type);
+                writer.Write(entry.Flags);
 
                 // Zero padding
                 writer.Write((byte)0);
@@ -154,7 +154,7 @@ namespace WArchiveTools.Archives
                 }
 
                 // Entry is a directory
-                if (entry.Type == 0x02)
+                if (entry.Flags == 0x02)
                 {
                     if (entry.Data[0] != 255)
                     {
@@ -173,7 +173,7 @@ namespace WArchiveTools.Archives
                 }
 
                 // Entry is a file
-                if (entry.Type == 0x11)
+                if (entry.Flags == 0x11)
                 {
                     // Offset of the file's data
                     writer.Write((int)exportFileData.Count);
@@ -233,7 +233,7 @@ namespace WArchiveTools.Archives
                     {
                         ID = (ushort)exportFileEntries.Count,
                         NameHashcode = HashName(virtFile.Name + virtFile.Extension),
-                        Type = 0x11,
+                        Flags = 0x11,
                         Name = virtFile.Name + virtFile.Extension,
                         Data = virtFile.Data
                     };
@@ -263,7 +263,7 @@ namespace WArchiveTools.Archives
                     {
                         ID = ushort.MaxValue,
                         NameHashcode = HashName(virtDir.Name),
-                        Type = 0x02,
+                        Flags = 0x02,
                         Name = virtDir.Name,
                         Data = new byte[] { (byte)(exportNodes.IndexOf(exportNodes.Find(i => i.Name == virtDir.Name))) },
                     };
@@ -340,7 +340,7 @@ namespace WArchiveTools.Archives
             {
                 ID = ushort.MaxValue,
                 NameHashcode = HashName("."),
-                Type = 0x02,
+                Flags = 0x02,
                 Name = ".",
                 Data = new byte[] { (byte)(exportNodes.IndexOf(exportNodes.Find(i => i.Name == currentDir.Name))) },
             };
@@ -352,7 +352,7 @@ namespace WArchiveTools.Archives
                 {
                     ID = ushort.MaxValue,
                     NameHashcode = HashName(".."),
-                    Type = 0x02,
+                    Flags = 0x02,
                     Name = "..",
                     Data = new byte[] { (byte)(exportNodes.IndexOf(exportNodes.Find(i => i.Name == parentDir.Name))) },
                 };
@@ -365,7 +365,7 @@ namespace WArchiveTools.Archives
                 {
                     ID = ushort.MaxValue,
                     NameHashcode = HashName(".."),
-                    Type = 0x02,
+                    Flags = 0x02,
                     Name = "..",
                     Data = new byte[] { (byte)(255) },
                 };
