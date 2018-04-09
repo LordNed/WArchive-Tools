@@ -97,32 +97,32 @@ namespace WArchiveTools
                 fileWriter.Write(rawData);
                 fileWriter.Seek(0, SeekOrigin.Begin);
                 fileWriter.BaseStream.CopyTo(outputData);
-            }
 
-            MemoryStream compressedStream = new MemoryStream();
+                MemoryStream compressedStream = new MemoryStream();
 
-            switch(compression)
-            {
-                case ArchiveCompression.Yay0:
-                    throw new NotImplementedException("Yay0 Compression not implemented.");
+                switch (compression)
+                {
+                    case ArchiveCompression.Yay0:
+                        throw new NotImplementedException("Yay0 Compression not implemented.");
                     //compressedStream = Yay0.Encode(uncompressedStream);
                     //break;
 
-                case ArchiveCompression.Yaz0:
-                    EndianBinaryWriter encoded = Yaz0.Encode(uncompressedStream);
-                    encoded.Seek(0, SeekOrigin.Begin);
-                    encoded.BaseStream.CopyTo(compressedStream);
-                    break;
+                    case ArchiveCompression.Yaz0:
+                        EndianBinaryWriter encoded = Yaz0.Encode(uncompressedStream);
+                        encoded.Seek(0, SeekOrigin.Begin);
+                        encoded.BaseStream.CopyTo(compressedStream);
+                        break;
 
-                case ArchiveCompression.Uncompressed:
+                    case ArchiveCompression.Uncompressed:
 
-                    // Well, that was easy.
-                    compressedStream = uncompressedStream;
-                    break;
+                        // Well, that was easy.
+                        compressedStream = uncompressedStream;
+                        break;
+                }
+
+                compressedStream.Seek(0, SeekOrigin.Begin);
+                compressedStream.WriteTo(File.Create(outputPath));
             }
-
-            compressedStream.Seek(0, SeekOrigin.Begin);
-            compressedStream.WriteTo(File.Create(outputPath));
         }
     }
 }
