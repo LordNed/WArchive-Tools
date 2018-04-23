@@ -10,6 +10,10 @@ namespace WArchiveTools.ISOs
 {
     public partial class ISO
     {
+        const uint DolAlignment = 1024;
+        const uint FstAlignment = 256;
+        const uint OffsetOfDolOffset = 0x420;
+
         #region Dumping files
         public void DumpToDisk(VirtualFilesystemDirectory root, string path)
         {
@@ -76,31 +80,43 @@ namespace WArchiveTools.ISOs
                 List<FSTEntry> outputFST = new List<FSTEntry>();
                 List<VirtualFilesystemFile> fileList = new List<VirtualFilesystemFile>();
                 FSTEntry rootFST = new FSTEntry();
-
-                int fstListOffset = 0;
-
-                VirtualFilesystemDirectory sysDir = (VirtualFilesystemDirectory)root.Children[0];
-                VirtualFilesystemFile header = (VirtualFilesystemFile)sysDir.Children[0];
+                
+                VirtualFilesystemDirectory sysDir = (VirtualFilesystemDirectory)root.Children.SingleOrDefault(e => e.Name == "&&systemdata") 
+                    ?? (VirtualFilesystemDirectory)root.Children.SingleOrDefault(e => e.Name == "sys");
+                VirtualFilesystemFile header = (VirtualFilesystemFile)sysDir.Children.Single(e => e is VirtualFilesystemFile && ((VirtualFilesystemFile)e).NameWithExtension == "iso.hdr");
                 writer.Write(header.Data);
 
-                VirtualFilesystemFile apploader = (VirtualFilesystemFile)sysDir.Children[2];
+                VirtualFilesystemFile apploader = (VirtualFilesystemFile)sysDir.Children.SingleOrDefault(e => e is VirtualFilesystemFile && ((VirtualFilesystemFile)e).NameWithExtension == "AppLoader.ldr") 
+                    ?? (VirtualFilesystemFile)sysDir.Children.SingleOrDefault(e => e is VirtualFilesystemFile && ((VirtualFilesystemFile)e).NameWithExtension == "apploader.img");
                 writer.Write(apploader.Data);
 
-                VirtualFilesystemFile dol = (VirtualFilesystemFile)sysDir.Children[1];
+                var dolOffsetWithoutPadding = writer.BaseStream.Position;
+                var dolOffset = AlignTo(dolOffsetWithoutPadding, DolAlignment);
+                for (long i = dolOffsetWithoutPadding; i < dolOffset; i++)
+                {
+                    writer.Write((byte)0);
+                }
+
+                VirtualFilesystemFile dol = (VirtualFilesystemFile)sysDir.Children.Single(e => e is VirtualFilesystemFile && ((VirtualFilesystemFile)e).Extension == ".dol");
                 writer.Write(dol.Data);
 
-                fstListOffset = (int)writer.BaseStream.Position;
+                var fstListOffsetWithoutPadding = writer.BaseStream.Position;
+                var fstListOffset = AlignTo(fstListOffsetWithoutPadding, FstAlignment);
+                for (long i = fstListOffsetWithoutPadding; i < fstListOffset; i++)
+                {
+                    writer.Write((byte)0);
+                }
 
-                int fstSkipOffsetValue = 12;
+                int fstLength = 12;
 
                 root.Children.RemoveAt(0);
 
                 foreach (VirtualFilesystemNode node in root.Children)
                 {
-                    fstSkipOffsetValue = GetFSTSkipValue(fstSkipOffsetValue, node);
+                    fstLength = GetFSTSkipValue(fstLength, node);
                 }
 
-                byte[] dummyFST = new byte[fstSkipOffsetValue];
+                byte[] dummyFST = new byte[fstLength];
 
                 writer.Write(dummyFST);
 
@@ -127,7 +143,18 @@ namespace WArchiveTools.ISOs
                 }
 
                 writer.Write(fstNameBank.ToArray());
+
+                writer.BaseStream.Position = OffsetOfDolOffset;
+                writer.Write((uint)dolOffset);
+                writer.Write((uint)fstListOffset);
+                writer.Write((uint)fstLength);
+                writer.Write((uint)fstLength); // Doesn't work for multi disks
             }
+        }
+
+        private static long AlignTo(long addr, long align)
+        {
+            return (addr + (align - 1)) / align * align;
         }
 
         private int GetFSTSkipValue(int curValue, VirtualFilesystemNode node)
