@@ -182,6 +182,7 @@ namespace WArchiveTools.Archives
 
                     // Add data to the running list of file data
                     exportFileData.AddRange(entry.Data);
+                    Pad32(exportFileData);
                 }
 
                 writer.Write((int)0);
@@ -316,6 +317,16 @@ namespace WArchiveTools.Archives
             }
 
             return (ushort)hash;
+        }
+
+        private void Pad32(List<byte> data)
+        {
+            // Pad up to a 32 byte alignment
+            // Formula: (x + (n-1)) & ~(n-1)
+            long nextAligned = (data.Count + 0x1F) & ~0x1F;
+
+            long delta = nextAligned - data.Count;
+            data.AddRange(new byte[delta]);
         }
 
         private void Pad32(EndianBinaryWriter writer)
