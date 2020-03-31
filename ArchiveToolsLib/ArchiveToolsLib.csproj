@@ -30,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GameFormatReader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\GameFormatReader.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -53,6 +49,12 @@
     <Compile Include="Compression\Yay0Encoder.cs" />
     <Compile Include="Compression\Yaz0Decoder.cs" />
     <Compile Include="Compression\Yaz0Encoder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\GameFormatReader\GameFormatReader.csproj">
+      <Project>{afce536d-92ff-4ee5-8536-731d2cd5fbca}</Project>
+      <Name>GameFormatReader</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
